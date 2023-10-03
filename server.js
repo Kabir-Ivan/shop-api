@@ -26,8 +26,8 @@ JSON.parse(
   fs.readFileSync("./json/products.json", "utf8")
 ).map((product) => productsMap.set(product.id, product));
 
-const PORT = 3001;
-const BASE_URL = 'localhost:3000';
+const PORT = process.env.PORT;
+const BASE_URL = 'https://e-com-shop-demo.glitch.me';
 
 const genRanHex = (size) =>
   [...Array(size)]
@@ -102,10 +102,6 @@ const getCategoryById = (id, callback) => {
 
 app.use(express.static(__dirname + '/dist'));
 app.use(express.static(__dirname + '/public'));
-
-app.get('/', function(req, res) {
-  res.sendfile(__dirname + '/dist/index.html');
-});
 
 app.post("/api/order", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -269,7 +265,7 @@ app.post("/api/signup", (req, res) => {
   }
 });
 
-app.get("/api/recover", (req, res) => {
+app.post("/api/recover", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
@@ -323,6 +319,7 @@ app.post("/api/reset", (req, res) => {
       const recoveryId = createRecovery(email);
       emailjs.send("service_b48eip5","template_kows8c8",{
         name: user.name,
+        to: user.email,
         action_url: `${BASE_URL}/recover/${recoveryId}`,
         });
     }
@@ -564,6 +561,10 @@ app.get("/api/categories/:id", (req, res) => {
         .json({ error: "An error occurred while processing the data." });
     }
   });
+});
+
+app.get('*', function(req, res) {
+  res.sendfile(__dirname + '/dist/index.html');
 });
 
 http.listen(PORT, function () {
