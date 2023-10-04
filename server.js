@@ -26,7 +26,7 @@ JSON.parse(
   fs.readFileSync("./json/products.json", "utf8")
 ).map((product) => productsMap.set(product.id, product));
 
-const PORT = process.env.PORT;
+const PORT = 3001;
 const BASE_URL = 'https://e-com-shop-demo.glitch.me';
 
 const genRanHex = (size) =>
